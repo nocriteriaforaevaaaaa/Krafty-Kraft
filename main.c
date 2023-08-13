@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <./include/SDL2/SDL.h>
+#include <SDL.h>
 #include <stdbool.h>
 
 struct drawingStates
@@ -19,16 +19,14 @@ struct Eraser
     bool isErasing;
 
 } eraser;
-
 int main(int argc, char *argv[])
 {
+
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
         return 0;
     SDL_CreateWindowAndRenderer(700, 700, 0, &window, &renderer);
-    int x = 20;
-    int y = 30;
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
@@ -50,15 +48,14 @@ int main(int argc, char *argv[])
     eraser.isEraserOn = false;
 
     bool quit = false;
+    int mx;
+    int my;
     while (!quit)
     {
         if (SDL_PollEvent(&event))
         {
             switch (event.type)
             {
-            case SDL_QUIT:
-                quit = true;
-                break;
 
             case SDL_MOUSEBUTTONDOWN:
                 if (eraser.isEraserOn)
@@ -117,25 +114,27 @@ int main(int argc, char *argv[])
                 break;
 
             case SDL_MOUSEMOTION:
-                int mx;
-                int my;
 
                 SDL_GetMouseState(&mx, &my);
                 if (state.isDrawing)
                 {
-                    // draw a point on that location
                     SDL_SetRenderDrawColor(renderer, state.r, state.g, state.b, state.a);
                     SDL_RenderDrawPoint(renderer, mx, my);
+                    // draw a point on that location
                 }
                 else if (eraser.isErasing && eraser.isEraserOn)
                 {
+
                     // draws a block of defined dimentions
                     eraser.block.x = mx - 25;
                     eraser.block.y = my - 25;
-                    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, state.a);
                     SDL_RenderFillRect(renderer, &(eraser.block));
                 }
 
+                break;
+            case SDL_QUIT:
+                quit = true;
                 break;
             }
         }

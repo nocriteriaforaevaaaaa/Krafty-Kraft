@@ -1,1 +1,4 @@
-.vscode/
+/.vscode/
+/SDL2/
+src
+main.exe/
